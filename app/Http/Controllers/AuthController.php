@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -13,10 +14,11 @@ use Illuminate\Support\Str;
 
 class AuthController extends BaseController
 {
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-           'email' => 'required|unique:users|email',
-           'password' => 'required|same:password_repeat'
+            'email' => 'required|unique:users|email',
+            'password' => 'required|same:password_repeat'
         ]);
 
         if ($validator->fails()) {
@@ -24,9 +26,10 @@ class AuthController extends BaseController
         }
 
         $user = User::query()->create([
-           'email' => $request->input('email'),
-           'password' => Hash::make($request->input('password')),
-           'token' => Str::random(32)
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'token' => Str::random(32),
+            'email_verified_at' => Carbon::now()->toDateTimeString()
         ]);
 
         event(new Registered($user));
@@ -34,7 +37,8 @@ class AuthController extends BaseController
         return $this->sendResponse('', $user, 201);
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|exists:users',
             'password' => 'required'
@@ -56,11 +60,13 @@ class AuthController extends BaseController
         return $this->sendResponse('Successful login', $user, 200);
     }
 
-    public function verificationNotice() {
+    public function verificationNotice()
+    {
         return response('', 200);
     }
 
-    public function verificationVerify(EmailVerificationRequest $request) {
+    public function verificationVerify(EmailVerificationRequest $request)
+    {
         if ($request->user()->hasVerifiedEmail()) {
             return $this->sendError('User was already verified', null, 400);
         }
@@ -70,7 +76,8 @@ class AuthController extends BaseController
         return $this->sendResponse('Successful verification!', null, 200);
     }
 
-    public function verificationSend(Request $request) {
+    public function verificationSend(Request $request)
+    {
         if ($request->user()->hasVerifiedEmail()) {
             return $this->sendError('User was already verified', null, 400);
         }
