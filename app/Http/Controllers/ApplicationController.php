@@ -34,4 +34,10 @@ class ApplicationController extends BaseController
 
         return $this->sendResponse('Application successful created', $application, 201);
     }
+
+    public function showApplications(Request $request) {
+        $applications = Auth::user()->applications;
+
+        return $this->sendResponse('', $applications);
+    }
 }

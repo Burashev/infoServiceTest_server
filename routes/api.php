@@ -21,6 +21,6 @@ Route::middleware('auth.api')->group(function () {
 
     Route::prefix('/application')->group(function() {
         Route::post('/create', [ApplicationController::class, 'createApplication']);
-
+        Route::get('/all', [ApplicationController::class, 'showApplications']);
     });
 });
