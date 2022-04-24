@@ -1,6 +1,9 @@
 # infoservice_server
 
 ## Project setup
+```
+composer install
+```
 <p>Copy .env.example file to .env</p>
 <p>Set data for database (DB_*)</p>
 <p>Set data for mail (MAIL_*)</p>
